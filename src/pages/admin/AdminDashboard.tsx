@@ -37,11 +37,14 @@ export const AdminDashboard = () => {
                     .from('products')
                     .update({
                         name: productData.name,
+                        brand: productData.brand,
                         description: productData.description,
                         price: productData.price,
                         category: productData.category,
                         image_url: productData.imageUrl,
-                        stock: productData.stock
+                        stock: productData.stock,
+                        specifications: productData.specifications,
+                        variants: productData.variants
                     })
                     .eq('id', targetId); // Machea el texto exacto
 
@@ -55,11 +58,14 @@ export const AdminDashboard = () => {
                         {
                             id: productData.id,
                             name: productData.name,
+                            brand: productData.brand,
                             description: productData.description,
                             price: productData.price,
                             category: productData.category,
                             image_url: productData.imageUrl,
-                            stock: productData.stock
+                            stock: productData.stock,
+                            specifications: productData.specifications,
+                            variants: productData.variants
                         }
                     ]);
 
@@ -128,7 +134,7 @@ export const AdminDashboard = () => {
                 <p className="text-sm text-nexus-text-muted">Consola central de administración global.</p>
             </div>
 
-            {/* Metricas - KPIs */}
+            {/* Metricas - KPIs.- */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-nexus-surface border border-nexus-border/60 p-4 rounded-xl flex items-center justify-between text-white shadow-sm">
                     <div className="space-y-1">
@@ -182,20 +188,27 @@ export const AdminDashboard = () => {
                     </div>
                 ) : (
                     <>
-                        {/* 📱 MODO MOBILE: Tarjetas apilables en bloque (Ocultas a partir de md:) */}
+                        {/* MOBILE RESPONSIVE.- */}
                         <div className="grid grid-cols-1 gap-4 md:hidden">
                             {displayProducts.map((product) => (
                                 <div key={product.id} className="bg-nexus-surface border border-nexus-border/60 p-4 rounded-xl space-y-4 shadow-sm text-left">
                                     <div className="flex gap-4 items-start">
-                                        <img 
-                                            src={product.imageUrl} 
-                                            alt={product.name} 
+                                        <img
+                                            src={product.imageUrl}
+                                            alt={product.name}
                                             className="w-16 h-16 rounded-xl object-cover border border-nexus-border/40"
                                         />
                                         <div className="flex-1 min-w-0">
-                                            <span className="text-[10px] font-bold text-nexus-brand bg-nexus-brand/5 px-2 py-0.5 rounded border border-nexus-brand/10 uppercase tracking-wider">
-                                                {product.category}
-                                            </span>
+                                            <div className="flex gap-1.5 flex-wrap">
+                                                <span className="text-[10px] font-bold text-nexus-brand bg-nexus-brand/5 px-2 py-0.5 rounded border border-nexus-brand/10 uppercase tracking-wider">
+                                                    {product.category}
+                                                </span>
+                                                {product.brand && (
+                                                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/5 px-2 py-0.5 rounded border border-amber-400/10 uppercase tracking-wider">
+                                                        {product.brand}
+                                                    </span>
+                                                )}
+                                            </div>
                                             <h4 className="text-sm font-bold text-white truncate uppercase mt-1">{product.name}</h4>
                                             <p className="text-xs font-semibold text-nexus-brand/90 mt-0.5">{formatCurrency(product.price)}</p>
                                         </div>
@@ -208,15 +221,14 @@ export const AdminDashboard = () => {
                                         </span>
                                     </div>
 
-                                    {/* Botones de acción Mobile táctiles */}
                                     <div className="grid grid-cols-2 gap-2 pt-1">
-                                        <button 
+                                        <button
                                             onClick={() => startEditMode(product)}
                                             className="inline-flex items-center justify-center gap-1.5 bg-nexus-bg hover:bg-nexus-border border border-nexus-border/60 py-2.5 rounded-xl text-xs font-bold text-white transition-all cursor-pointer"
                                         >
                                             <Edit3 size={14} className="text-amber-500" /> Editar
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => handleDeleteProduct(product.id, product.name)}
                                             className="inline-flex items-center justify-center gap-1.5 bg-nexus-bg hover:bg-red-500/10 border border-nexus-border/60 hover:border-red-500/30 py-2.5 rounded-xl text-xs font-bold text-red-400 transition-all cursor-pointer"
                                         >
@@ -227,12 +239,13 @@ export const AdminDashboard = () => {
                             ))}
                         </div>
 
-                        {/* 🖥️ MODO DESKTOP: Tabla unificada tradicional (Oculta en celulares) */}
+                        {/* MODO PC.- */}
                         <div className="hidden md:block overflow-hidden border border-nexus-border/60 bg-nexus-surface rounded-xl shadow-sm text-left">
                             <table className="w-full text-sm">
                                 <thead className="bg-nexus-bg/40 text-nexus-text-muted text-xs uppercase tracking-wider font-bold border-b border-nexus-border/40">
                                     <tr>
                                         <th className="px-6 py-4">Producto</th>
+                                        <th className="px-6 py-4">Marca</th>
                                         <th className="px-6 py-4">Categoría</th>
                                         <th className="px-6 py-4">Precio (ARS)</th>
                                         <th className="px-6 py-4">Stock</th>
@@ -245,6 +258,11 @@ export const AdminDashboard = () => {
                                             <td className="px-6 py-3 flex items-center gap-3">
                                                 <img src={product.imageUrl} alt={product.name} className="w-10 h-10 rounded-lg object-cover border border-nexus-border/30" />
                                                 <span className="truncate max-w-50 uppercase tracking-tight">{product.name}</span>
+                                            </td>
+                                            <td className="px-6 py-3">
+                                                <span className="text-xs uppercase text-nexus-text-main font-semibold">
+                                                    {product.brand || "Genérico"}
+                                                </span>
                                             </td>
                                             <td className="px-6 py-3">
                                                 <span className="text-xs bg-nexus-bg border border-nexus-border/60 rounded-md px-2 py-1 text-nexus-text-muted">
@@ -261,14 +279,14 @@ export const AdminDashboard = () => {
                                             </td>
                                             <td className="px-6 py-3 text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <button 
+                                                    <button
                                                         onClick={() => startEditMode(product)}
                                                         className="p-2 bg-nexus-bg hover:bg-nexus-border border border-nexus-border/60 rounded-lg text-nexus-text-muted hover:text-white transition-all cursor-pointer"
                                                         title="Editar producto"
                                                     >
                                                         <Edit3 size={15} className="text-amber-500" />
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         onClick={() => handleDeleteProduct(product.id, product.name)}
                                                         className="p-2 bg-nexus-bg hover:bg-red-500/10 border border-nexus-border/60 hover:border-red-500/40 rounded-lg text-nexus-text-muted hover:text-red-400 transition-all cursor-pointer"
                                                         title="Eliminar producto"

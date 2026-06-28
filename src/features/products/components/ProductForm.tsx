@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { PlusCircle, Edit3, X } from 'lucide-react';
-import { type Product } from "../types";
+import { type Product, type CategoryType } from "../types";
 
 interface ProductFromProps {
     onAddProduct: (product: Product) => void;
@@ -8,19 +8,23 @@ interface ProductFromProps {
     onCancel?: () => void;
 }
 
+const CATEGORIES: CategoryType[] = ['Teclados', 'Mouse', 'Audio', 'Mousepads', 'Componentes', 'Accesorios'];
+
 export const ProductForm = ({ onAddProduct, productToEdit, onCancel }: ProductFromProps) => {
     const isEditing = !!productToEdit;
 
     const [name, setName] = useState('');
+    const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const [category, setCategory] = useState('Teclados');
+    const [category, setCategory] = useState<CategoryType>('Teclados');
     const [stock, setStock] = useState('');
 
     useEffect(() => {
         if (productToEdit) {
             setName(productToEdit.name);
+            setBrand(productToEdit.brand || '');
             setDescription(productToEdit.description);
             setPrice(productToEdit.price.toString());
             setImageUrl(productToEdit.imageUrl);
@@ -28,6 +32,7 @@ export const ProductForm = ({ onAddProduct, productToEdit, onCancel }: ProductFr
             setStock(productToEdit.stock.toString());
         } else {
             setName('');
+            setBrand('');
             setDescription('');
             setPrice('');
             setImageUrl('');
@@ -39,7 +44,7 @@ export const ProductForm = ({ onAddProduct, productToEdit, onCancel }: ProductFr
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!name || !description || !price || !imageUrl || !stock || !category) {
+        if (!name || !brand || !description || !price || !imageUrl || !stock || !category) {
             alert('Por favor, completa todos los campos.');
             return;
         }
@@ -49,18 +54,24 @@ export const ProductForm = ({ onAddProduct, productToEdit, onCancel }: ProductFr
             // Si edita, hereda estrictamente el ID del objeto a editar
             id: isEditing && productToEdit ? productToEdit.id : `prod-${Date.now()}`,
             name,
+            brand,
             description,
             price: parseFloat(price),
             imageUrl,
             category,
             stock: parseInt(stock, 10),
-            isFavorite: productToEdit?.isFavorite || false
+            isFavorite: productToEdit?.isFavorite || false,
+
+            // Viajaran vacios hasta la implementacion en el checkout.-
+            specifications: productToEdit?.specifications || {},
+            variants: productToEdit?.variants || []
         };
 
         onAddProduct(productData);
 
         if (!isEditing) {
             setName('');
+            setBrand('');
             setDescription('');
             setPrice('');
             setImageUrl('');
@@ -86,41 +97,58 @@ export const ProductForm = ({ onAddProduct, productToEdit, onCancel }: ProductFr
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+                {/* Nombre y Marca.-*/}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Nombre</label>
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Nombre del Producto</label>
                         <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Descripción</label>
-                        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Marca (Ej: Redragon, Logitech)</label>
+                        <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
                     </div>
                 </div>
 
+                {/* Descripción.- */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold text-nexus-text-muted uppercase">Descripción Corta</label>
+                    <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
+                </div>
+
+                {/* Precio, stock y categoria.- */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                    {/* Precio.- */}
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-semibold text-nexus-text-muted uppercase">Precio (ARS)</label>
                         <input type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
                     </div>
+
+                    {/* Stock.- */}
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Stock</label>
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Stock Global</label>
                         <input type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
                     </div>
+
+                    {/* Categoria.- */}
                     <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-semibold text-nexus-text-muted uppercase">Categoría</label>
-                        <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand cursor-pointer">
-                            <option value="Teclados">Teclados</option>
-                            <option value="Mouse">Mouse</option>
-                            <option value="Audio">Audio</option>
+                        <select value={category} onChange={(e) => setCategory(e.target.value as CategoryType)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand cursor-pointer">
+                            {CATEGORIES.map((cat) => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
 
+                {/* URL de la imagen.- */}
                 <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-semibold text-nexus-text-muted uppercase">URL de la Imagen</label>
                     <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
                 </div>
 
+                {/* Boton de enviar.- */}
                 <button type="submit" className={`mt-2 w-full text-white text-sm font-bold uppercase py-3 rounded-xl shadow-sm transition-all cursor-pointer ${isEditing ? 'bg-amber-600 hover:bg-amber-500' : 'bg-nexus-brand hover:bg-nexus-brand-hover'}`}>
                     {isEditing ? 'Actualizar Cambios en la Nube' : 'Guardar Producto'}
                 </button>
