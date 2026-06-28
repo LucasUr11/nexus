@@ -1,0 +1,130 @@
+import { useState, useEffect } from "react";
+import { PlusCircle, Edit3, X } from 'lucide-react';
+import { type Product } from "../types";
+
+interface ProductFromProps {
+    onAddProduct: (product: Product) => void;
+    productToEdit?: Product | null;
+    onCancel?: () => void;
+}
+
+export const ProductForm = ({ onAddProduct, productToEdit, onCancel }: ProductFromProps) => {
+    const isEditing = !!productToEdit;
+
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    const [category, setCategory] = useState('Teclados');
+    const [stock, setStock] = useState('');
+
+    useEffect(() => {
+        if (productToEdit) {
+            setName(productToEdit.name);
+            setDescription(productToEdit.description);
+            setPrice(productToEdit.price.toString());
+            setImageUrl(productToEdit.imageUrl);
+            setCategory(productToEdit.category);
+            setStock(productToEdit.stock.toString());
+        } else {
+            setName('');
+            setDescription('');
+            setPrice('');
+            setImageUrl('');
+            setCategory('Teclados');
+            setStock('');
+        }
+    }, [productToEdit]);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!name || !description || !price || !imageUrl || !stock || !category) {
+            alert('Por favor, completa todos los campos.');
+            return;
+        }
+
+        // Crea un unico objeto respetando si es edicion o creacion.-
+        const productData: Product = {
+            // Si edita, hereda estrictamente el ID del objeto a editar
+            id: isEditing && productToEdit ? productToEdit.id : `prod-${Date.now()}`,
+            name,
+            description,
+            price: parseFloat(price),
+            imageUrl,
+            category,
+            stock: parseInt(stock, 10),
+            isFavorite: productToEdit?.isFavorite || false
+        };
+
+        onAddProduct(productData);
+
+        if (!isEditing) {
+            setName('');
+            setDescription('');
+            setPrice('');
+            setImageUrl('');
+            setCategory('Teclados');
+            setStock('');
+        }
+    };
+
+    return (
+        <section id="product-form-section" className="bg-nexus-surface border border-nexus-border/60 p-6 rounded-2xl shadow-sm text-left relative overflow-hidden">
+            <div className="flex items-center justify-between border-b border-nexus-border/20 pb-3 mb-5">
+                <div className="flex items-center gap-2">
+                    {isEditing ? <Edit3 size={18} className="text-amber-500" /> : <PlusCircle size={18} className="text-nexus-brand" />}
+                    <h3 className="text-sm font-black uppercase tracking-wider text-white">
+                        {isEditing ? `Editando: ${productToEdit?.name}` : 'Añadir nuevo producto'}
+                    </h3>
+                </div>
+                {isEditing && onCancel && (
+                    <button onClick={onCancel} className="inline-flex items-center gap-1 text-[11px] font-bold uppercase bg-nexus-bg border border-nexus-border/60 px-2.5 py-1 rounded-lg text-nexus-text-muted hover:text-red-400 transition-all cursor-pointer">
+                        <X size={12} /> Cancelar edición
+                    </button>
+                )}
+            </div>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Nombre</label>
+                        <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Descripción</label>
+                        <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Precio (ARS)</label>
+                        <input type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Stock</label>
+                        <input type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold text-nexus-text-muted uppercase">Categoría</label>
+                        <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand cursor-pointer">
+                            <option value="Teclados">Teclados</option>
+                            <option value="Mouse">Mouse</option>
+                            <option value="Audio">Audio</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold text-nexus-text-muted uppercase">URL de la Imagen</label>
+                    <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="w-full bg-nexus-bg border border-nexus-border rounded-xl py-2 px-4 text-sm text-white focus:outline-none focus:border-nexus-brand" />
+                </div>
+
+                <button type="submit" className={`mt-2 w-full text-white text-sm font-bold uppercase py-3 rounded-xl shadow-sm transition-all cursor-pointer ${isEditing ? 'bg-amber-600 hover:bg-amber-500' : 'bg-nexus-brand hover:bg-nexus-brand-hover'}`}>
+                    {isEditing ? 'Actualizar Cambios en la Nube' : 'Guardar Producto'}
+                </button>
+            </form>
+        </section>
+    );
+}

@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fondo dominante de la app (Azul marino hiper-oscuro) */
+  --color-nexus-bg: #0b0f19;
+  
+  /* Superficies de las tarjetas y modales */
+  --color-nexus-surface: #161e2e;
+  
+  /* Bordes finos y sutiles */
+  --color-nexus-border: #243249;
+
+  /* Color de acento de la marca (Violeta Eléctrico) */
+  --color-nexus-brand: #8b5cf6;
+  --color-nexus-brand-hover: #a78bfa;
+
+  /* Textos */
+  --color-nexus-text-main: #f3f4f6;
+  --color-nexus-text-muted: #9ca3af;
+}
