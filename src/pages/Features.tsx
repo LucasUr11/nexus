@@ -31,7 +31,7 @@ const FEATURES = [
 export const Features = () => {
     return (
         <FadeIn>
-            <section className="w-full bg-nexus-bg border-y border-nexus-border/30">
+            <section className="w-full flex bg-nexus-bg border-y border-nexus-border/30">
                 <div className="max-w-7xl mx-auto px-6 py-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         {FEATURES.map((feature) => (
@@ -39,7 +39,7 @@ export const Features = () => {
                                 key={feature.id}
                                 className="flex items-center gap-4 group cursor-default transition-all duration-300 hover:translate-x-1"
                             >
-                                <div className="shrink-0 p-3 rounded-xl bg-nexus-surface border border-nexus-border/50 group-hover:border-nexus-brand/50 group-hover:shadow-[0_0_15px_rgba(139,92,246,0.15)] transition-all">
+                                <div className="shrink-0 p-3 rounded-xl bg-nexus-surface border border-nexus-border/50 group-hover:border-nexus-brand/50 group-hover:shadow-[0_0_15px_rgba(139,92,246,0.15)] transition-all ring-nexus-bg animate-pulse">
                                     {feature.icon}
                                 </div>
 
