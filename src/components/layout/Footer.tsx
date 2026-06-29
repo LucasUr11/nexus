@@ -1,5 +1,7 @@
 import { Logo } from "../../assets/Logo";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faXTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 
 export const Footer = () => {
 
@@ -29,14 +31,16 @@ export const Footer = () => {
                         </p>
 
                         <div className="flex items-center gap-3 pt-2">
-                            <a href="#ig" className="p-2 bg-nexus-surface rounded-lg text-nexus-text-muted hover:text-white hover:border-nexus-brand border border-transparent transition-all">
-                                {/* <Instagram size={16} /> */}
+                            <a href="https://www.instagram.com/lucas_urquiza11/" className="p-2 bg-nexus-surface rounded-lg text-nexus-text-muted hover:text-white hover:border-nexus-brand border border-transparent transition-all">
+                                <FontAwesomeIcon icon={faInstagram} />
                             </a>
-                            <a href="#tw" className="p-2 bg-nexus-surface rounded-lg text-nexus-text-muted hover:text-white hover:border-nexus-brand border border-transparent transition-all">
-                                {/* <Twitter size={16} /> */}
+                            <a href="https://www.x.com/UrLucas11" className="p-2 bg-nexus-surface rounded-lg text-nexus-text-muted hover:text-white hover:border-nexus-brand border border-transparent transition-all">
+                                <FontAwesomeIcon icon={faXTwitter} />
+
                             </a>
-                            <a href="#git" className="p-2 bg-nexus-surface rounded-lg text-nexus-text-muted hover:text-white hover:border-nexus-brand border border-transparent transition-all">
-                                {/* <Github size={16} /> */}
+                            <a href="https://github.com/LucasUr11" className="p-2 bg-nexus-surface rounded-lg text-nexus-text-muted hover:text-white hover:border-nexus-brand border border-transparent transition-all">
+                                <FontAwesomeIcon icon={faGithub} />
+
                             </a>
                         </div>
                     </div>
