@@ -17,7 +17,7 @@ export const Footer = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
 
                 {/* Grid Principales.- */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 lg:items-center gap-12 lg:gap-8 pb-12 border-b border-nexus-border/30">
+                <div className="grid grid-cols-2 lg:grid-cols-5 lg:items-start gap-12 lg:gap-8 pb-12 border-b border-nexus-border/30">
 
                     {/* Columna 1: Branding.- */}
                     <div className="space-y-4">
