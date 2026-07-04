@@ -24,11 +24,14 @@ export const useProducts = () => {
                 const mappedProducts: Product[] = data.map((item: any) => ({
                     id: String(item.id), // Aseguramos que sea string puro
                     name: item.name,
+                    brand: item.brand || "",
                     description: item.description,
                     price: Number(item.price),
                     imageUrl: item.image_url,
                     category: item.category,
                     stock: item.stock,
+                    specifications: item.specifications || {},
+                    variants: item.variants || [],
                     isFavorite: item.is_favorite || false,
                 }));
                 setProducts(mappedProducts);

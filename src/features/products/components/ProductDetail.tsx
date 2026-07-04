@@ -33,11 +33,14 @@ export const ProductDetail = () => {
                     const mappedProduct: Product = {
                         id: data.id,
                         name: data.name,
+                        brand: data.brand || "",
                         description: data.description,
                         price: Number(data.price),
                         imageUrl: data.image_url,
                         category: data.category,
                         stock: data.stock,
+                        specifications: data.specifications || {},
+                        variants: data.variants || [],
                         isFavorite: data.is_favorite
                     };
 
