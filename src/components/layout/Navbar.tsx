@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, ShoppingCart, Heart, X, Menu } from 'lucide-react';
+import { ShoppingCart, Heart, X, Menu } from 'lucide-react';
 import { Logo } from '../../assets/Logo';
 import { Link } from 'react-router-dom';
 import { useFavorites } from '../../context/FavoritesContext';
@@ -29,34 +29,67 @@ export const Navbar = () => {
     return (
         <header className="w-full bg-nexus-bg border-b border-nexus-border sticky top-0 z-50 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                
-                {/* Fila principal- */}
-                <div className="flex items-center justify-between h-16 md:h-20 gap-4">
 
-                    {/* Buscador.- */}
-                    <div className="flex-1 flex items-center">
-                        <div className="relative w-full max-w-xs group">
-                            <input
-                                type="text"
-                                placeholder="Buscar..."
-                                className="w-full bg-nexus-surface border border-nexus-border rounded-full py-1.5 pl-10 pr-4 text-sm text-nexus-text-main placeholder-nexus-text-muted/60 focus:outline-none focus:border-nexus-brand focus:ring-1 focus:ring-nexus-brand transition-all hidden md:block"
-                            />
-                            <button className="p-2 text-nexus-text-muted hover:text-nexus-text-main md:hidden" aria-label="Buscar">
-                                <Search size={22} />
-                            </button>
-                        </div>
+
+                {/* Fila principal- */}
+                <div className="flex items-center justify-between h-18 md:h-20 gap-4">
+                    
+                    {/* Fila inferior para Mobiles.- */}
+                    <div className="flex md:hidden h-10">
+                        <button
+                            onClick={() => setIsOpenMenu(!isOpenMenu)}
+                            className="text-nexus-text-muted hover:text-white p-1 transition-colors flex items-center gap-1.5 cursor-pointer"
+                            aria-label="Abrir menú de navegación"
+                        >
+                            {isOpenMenu ? <X size={20} /> : <Menu size={20} />}
+                            <span className="text-[11px] uppercase tracking-widest font-medium">Categorías</span>
+                        </button>
+                    </div>
+
+                    {/* Despliegue Responsive de Categorias.- */}
+                    <div
+                        className={`fixed inset-x-0 top-26.25 bottom-0 bg-nexus-bg/95 backdrop-blur-md z-40 md:hidden transition-all duration-300 transform border-t border-nexus-border/60 
+                    ${isOpenMenu ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
+                            }
+                `}
+                    >
+                        <nav className="flex flex-col items-center justify-center gap-8 h-full pb-24">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    to={link.to}
+                                    onClick={() => setIsOpenMenu(false)}
+                                    className="text-xl font-medium text-nexus-text-main hover:text-nexus-brand transition-colors tracking-wide"
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </nav>
                     </div>
 
                     {/* Logo Central.- */}
-                    <div className="shrink-0 flex items-center px-4">
+                    <div className="shrink-0 flex md:items-center md:justify-center p-4">
                         <Logo size="lg" />
                     </div>
 
+                    <div className="hidden md:flex items-center justify-center gap-12 h-12">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                to={link.to}
+                                className="text-sm font-medium text-nexus-text-muted hover:text-white hover:tracking-wide transition-all duration-200 relative pb-1 group"
+                            >
+                                {link.name}
+                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-nexus-brand group-hover:w-full transition-all duration-300"></span>
+                            </Link>
+                        ))}
+                    </div>
+
                     {/* Herramientas / Iconos de accion.- */}
-                    <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
+                    <div className="flex items-center gap-2 md:gap-4">
 
                         <div className="relative">
-                            <button 
+                            <button
                                 onClick={() => {
                                     setIsFavOpen(!isFavOpen)
                                     setIsCartOpen(false); // Para cerrar el carrito (si esta abierto) para abrir Favoritos.-
@@ -73,7 +106,7 @@ export const Navbar = () => {
                         </div>
 
                         {/* Boton del Carrito.- */}
-                        <button 
+                        <button
                             onClick={() => {
                                 setIsCartOpen(true);
                                 setIsFavOpen(false); // Para cerrar Favoritos (si esta abierto) para abrir el Carrito.-
@@ -93,55 +126,10 @@ export const Navbar = () => {
                 </div>
             </div>
 
-            {/* Fila inferior.- */}
-            <nav className="hidden md:flex items-center justify-center gap-12 h-12 border-t border-nexus-border/40">
-                {navLinks.map((link) => (
-                    <Link
-                        key={link.name}
-                        to={link.to}
-                        className="text-sm font-medium text-nexus-text-muted hover:text-white hover:tracking-wide transition-all duration-200 relative pb-1 group"
-                    >
-                        {link.name}
-                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-nexus-brand group-hover:w-full transition-all duration-300"></span>
-                    </Link>
-                ))}
-            </nav>
-
             {/* Sidebar lateral del Carrito.- */}
             <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-            {/* Fila inferior para Mobiles.- */}
-            <div className="flex md:hidden items-center justify-center h-10 border-t border-nexus-border/30">
-                <button
-                    onClick={() => setIsOpenMenu(!isOpenMenu)}
-                    className="text-nexus-text-muted hover:text-white p-1 transition-colors flex items-center gap-1.5 cursor-pointer"
-                    aria-label="Abrir menú de navegación"
-                >
-                    {isOpenMenu ? <X size={20} /> : <Menu size={20} />}
-                    <span className="text-xs uppercase tracking-widest font-medium">Categorías</span>
-                </button>
-            </div>
 
-            {/* Despliegue Responsive de Categorias.- */}
-            <div
-                className={`fixed inset-x-0 top-26.25 bottom-0 bg-nexus-bg/95 backdrop-blur-md z-40 md:hidden transition-all duration-300 transform border-t border-nexus-border/60 
-                    ${isOpenMenu ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
-                    }
-                `}
-            >
-                <nav className="flex flex-col items-center justify-center gap-8 h-full pb-24">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            to={link.to}
-                            onClick={() => setIsOpenMenu(false)}
-                            className="text-xl font-medium text-nexus-text-main hover:text-nexus-brand transition-colors tracking-wide"
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
-                </nav>
-            </div>
         </header>
     )
 }

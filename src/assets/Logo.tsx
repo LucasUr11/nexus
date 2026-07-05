@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 
 interface LogoProps {
     className?: string;
-    // showText?: boolean;
+    showText?: boolean;
     size?: 'sm' | 'md' | 'lg';
 }
 
-export const Logo: React.FC<LogoProps> = ({ className = '', size = 'md' }) => {
+export const Logo: React.FC<LogoProps> = ({ className = '', showText, size = 'md' }) => {
 
     {/* Maneja los tamaños.- */ }
     const dimensions = {
@@ -27,11 +27,11 @@ export const Logo: React.FC<LogoProps> = ({ className = '', size = 'md' }) => {
             />
 
             {/* Texto de marca inferior.- */}
-            {/* {showText && (
+            {showText && (
                 <span className={`font-black tracking-[0.2em] uppercase italic text-white transition-colors duration-300 group-hover:text-nexus-brand ${size === 'lg' ? 'text-xl' : 'text-sm'}`}>
-                    Nexus <span className="text-nexus-brand group-hover:text-white transition-colors duration-300">PC</span>
+                    Nexus
                 </span>
-            )} */}
+            )}
         </Link>
     );
 };
